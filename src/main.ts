@@ -18,12 +18,27 @@ const controls = {
   G: 0.0,
   B: 0.0,
   A: 1.0,
+  'Lambert': changeToLambert,
+  'FBM': changeToFBM,
 };
 
 let icosphere: Icosphere;
 let square: Square;
 let cube: Cube;
 let prevTesselations: number = 5;
+
+
+var fragShader = require('./shaders/lambert-frag.glsl');
+function changeToLambert()
+{
+  fragShader = require('./shaders/lambert-frag.glsl');
+}
+function changeToFBM()
+{
+  fragShader = require('./shaders/fbm-frag.glsl');
+}
+var prevShader = fragShader;
+
 
 function loadScene() {
   icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
@@ -52,6 +67,9 @@ function main() {
   colorGUI.add(controls, 'G', 0, 1).step(0.01);
   colorGUI.add(controls, 'B', 0, 1).step(0.01);
   colorGUI.add(controls, 'A', 0, 1).step(0.01);
+  var shaderGUI = gui.addFolder('Shaders');
+  shaderGUI.add(controls, 'Lambert');
+  shaderGUI.add(controls, 'FBM');
 
 
   // get canvas and webgl context
@@ -78,6 +96,7 @@ function main() {
     new Shader(gl.FRAGMENT_SHADER, require('./shaders/lambert-frag.glsl')),
   ]);
 
+
   // This function will be called every frame
   function tick() {
     camera.update();
@@ -90,7 +109,18 @@ function main() {
       icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, prevTesselations);
       icosphere.create();
     }
-    renderer.render(camera, lambert, [
+
+    var newShader = lambert;
+    if (prevShader != fragShader)
+    {
+        newShader = new ShaderProgram([
+        new Shader(gl.VERTEX_SHADER, require('./shaders/lambert-vert.glsl')),
+        new Shader(gl.FRAGMENT_SHADER, fragShader),
+    
+      ]);
+    }
+
+    renderer.render(camera, newShader, [
       // icosphere,
       // square,
        cube,

@@ -101,6 +101,6 @@ void main()
                                                             //lit by our point light are not completely black.
 
         // Compute final shaded color
-        out_Col = vec4(diffuseColor.rgb * lightIntensity, diffuseColor.a);
-        //out_Col = vec4(diffuseColor.rgb * fbm(fs_Pos.xyz), diffuseColor.a);
+        //out_Col = vec4(diffuseColor.rgb * lightIntensity, diffuseColor.a);
+        out_Col = vec4(diffuseColor.rgb * fbm(fs_Pos.xyz), diffuseColor.a);
 }
