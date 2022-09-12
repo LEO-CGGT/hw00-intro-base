@@ -21,10 +21,11 @@ const controls = {
   'Lambert': changeToLambert,
   'Perlin': changeToPerlin,
   'Worley': changeToWorley,
+  'Custom': changeToCustom,
   'Regular': changeToRegular,
   'Expand': changeToExpand,
   'Collapse': changeToCollapse,
-
+  'Distort':changeToDistort,
 };
 
 let icosphere: Icosphere;
@@ -46,6 +47,10 @@ function changeToWorley()
 {
   fragShader = require('./shaders/worley-frag.glsl');
 }
+function changeToCustom()
+{
+  fragShader = require('./shaders/custom-frag.glsl');
+}
 function changeToRegular()
 {
   vertShader = require('./shaders/lambert-vert.glsl');
@@ -57,6 +62,10 @@ function changeToExpand()
 function changeToCollapse()
 {
   vertShader = require('./shaders/collapse-vert.glsl');
+}
+function changeToDistort()
+{
+  vertShader = require('./shaders/distort-vert.glsl');
 }
 var prevFragShader = fragShader;
 var prevVertShader = vertShader;
@@ -93,10 +102,12 @@ function main() {
   fragShaderGUI.add(controls, 'Lambert');
   fragShaderGUI.add(controls, 'Perlin');
   fragShaderGUI.add(controls, 'Worley');
+  fragShaderGUI.add(controls, 'Custom');
   var vertShaderGUI = gui.addFolder('Vert Shaders');
   vertShaderGUI.add(controls, 'Regular');
   vertShaderGUI.add(controls, 'Expand');
   vertShaderGUI.add(controls, 'Collapse');
+  vertShaderGUI.add(controls, 'Distort');
 
 
   // get canvas and webgl context

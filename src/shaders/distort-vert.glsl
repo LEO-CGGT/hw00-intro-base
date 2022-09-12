@@ -35,9 +35,63 @@ out vec4 fs_Col;            // The color of each vertex. This is implicitly pass
 const vec4 lightPos = vec4(5, 5, 3, 1); //The position of our virtual light, which is used to compute the shading of
                                         //the geometry in the fragment shader.
 
+vec3 random3(vec3 p)
+{
+    return fract(sin(vec3(dot(p, vec3(127.1f, 311.7f, 191.999f)),
+                     dot(p, vec3(269.5f,183.3f, 472.6f)),
+                     dot(p, vec3(377.4f,451.1f, 159.2f)))
+                     * 43758.5453f));
+}
+
+float random1(float x)
+{
+    return fract(sin(x * 127.1) * 43758.5453);
+}
+
+// WorleyNoise function copied from the lecture notes
+// float WorleyNoise(vec3 p) 
+// {
+//     vec3 pInt = floor(p);
+//     vec3 pFract = fract(p);
+//     float minDist = 1.0; // Minimum distance initialized to max.
+//     for (int z = -1; z <= 1; ++z)
+//     {
+//         for(int y = -1; y <= 1; ++y) 
+//         {
+//             for(int x = -1; x <= 1; ++x) 
+//             {
+//                 vec3 neighbor = vec3(float(x), float(y), float(z)); // Direction in which neighbor cell lies
+//                 vec3 point = random3(pInt + neighbor); // Get the Voronoi centerpoint for the neighboring cell
+//                 vec3 diff = neighbor + point - pFract; // Distance between fragment coord and neighbor’s Voronoi point
+//                 float dist = length(diff);
+//                 minDist = min(minDist, dist);
+//             }
+//         }
+//     }
+//     return minDist;
+// }
+float WorleyNoise(float p) 
+{
+    float pInt = floor(p);
+    float pFract = fract(p);
+    float minDist = 1.0; // Minimum distance initialized to max.
+            for(int x = -1; x <= 1; ++x) 
+            {
+                float neighbor = float(x); // Direction in which neighbor cell lies
+                float point = random1(pInt + neighbor); // Get the Voronoi centerpoint for the neighboring cell
+                float diff = neighbor + point - pFract; // Distance between fragment coord and neighbor’s Voronoi point
+                float dist = length(diff);
+                minDist = min(minDist, dist);
+            }
+    return minDist;
+}
+
+
+
+
 void main()
 {
-    float radius = 2.0f;
+    float radius = 1.0f;
 
     fs_Col = vs_Col;                         // Pass the vertex colors to the fragment shader for interpolation
 
@@ -54,8 +108,11 @@ void main()
 
 
     vec4 modelposition = u_Model * vs_Pos;   // Temporarily store the transformed vertex positions for use below
-    
-    modelposition =  mix(modelposition, vec4(normalize(modelposition.xyz) * radius, 1), abs(cos(u_Time/1000.0)));
+
+    modelposition.x += WorleyNoise(vs_Pos.y + vs_Pos.z + cos(u_Time / 1000.0)) ;
+    modelposition.y += WorleyNoise(vs_Pos.z + vs_Pos.x + cos(u_Time / 1000.0)) ;
+    modelposition.z += WorleyNoise(vs_Pos.x + vs_Pos.y + cos(u_Time / 1000.0)) ;
+
 
     fs_LightVec = lightPos - modelposition;  // Compute the direction in which the light source lies
 
