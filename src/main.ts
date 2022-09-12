@@ -44,7 +44,7 @@ function changeToPerlin()
 }
 function changeToWorley()
 {
-  fragShader = require('./shaders/Worley-frag.glsl');
+  fragShader = require('./shaders/worley-frag.glsl');
 }
 function changeToRegular()
 {
