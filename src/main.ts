@@ -20,6 +20,8 @@ const controls = {
   A: 1.0,
   'Lambert': changeToLambert,
   'FBM': changeToFBM,
+  'Regular': changeToRegular,
+  'Custom1': changeToCustom1,
 };
 
 let icosphere: Icosphere;
@@ -27,7 +29,7 @@ let square: Square;
 let cube: Cube;
 let prevTesselations: number = 5;
 
-
+var vertShader = require('./shaders/lambert-vert.glsl');
 var fragShader = require('./shaders/lambert-frag.glsl');
 function changeToLambert()
 {
@@ -37,7 +39,16 @@ function changeToFBM()
 {
   fragShader = require('./shaders/fbm-frag.glsl');
 }
-var prevShader = fragShader;
+function changeToRegular()
+{
+  vertShader = require('./shaders/lambert-vert.glsl');
+}
+function changeToCustom1()
+{
+  vertShader = require('./shaders/custom1-vert.glsl');
+}
+var prevFragShader = fragShader;
+var prevVertShader = vertShader;
 
 
 function loadScene() {
@@ -67,10 +78,12 @@ function main() {
   colorGUI.add(controls, 'G', 0, 1).step(0.01);
   colorGUI.add(controls, 'B', 0, 1).step(0.01);
   colorGUI.add(controls, 'A', 0, 1).step(0.01);
-  var shaderGUI = gui.addFolder('Shaders');
-  shaderGUI.add(controls, 'Lambert');
-  shaderGUI.add(controls, 'FBM');
-
+  var fragShaderGUI = gui.addFolder('Frag Shaders');
+  fragShaderGUI.add(controls, 'Lambert');
+  fragShaderGUI.add(controls, 'FBM');
+  var vertShaderGUI = gui.addFolder('Vert Shaders');
+  vertShaderGUI.add(controls, 'Regular');
+  vertShaderGUI.add(controls, 'Custom1');
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -111,10 +124,10 @@ function main() {
     }
 
     var newShader = lambert;
-    if (prevShader != fragShader)
+    if (prevFragShader != fragShader || prevVertShader != vertShader)
     {
         newShader = new ShaderProgram([
-        new Shader(gl.VERTEX_SHADER, require('./shaders/lambert-vert.glsl')),
+        new Shader(gl.VERTEX_SHADER, vertShader),
         new Shader(gl.FRAGMENT_SHADER, fragShader),
     
       ]);

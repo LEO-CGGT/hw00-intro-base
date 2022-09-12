@@ -6,6 +6,7 @@ import ShaderProgram from './ShaderProgram';
 
 // In this file, `gl` is accessible because it is imported above
 class OpenGLRenderer {
+  startTime: number = Date.now();
   constructor(public canvas: HTMLCanvasElement) {
   }
 
@@ -32,6 +33,7 @@ class OpenGLRenderer {
     prog.setModelMatrix(model);
     prog.setViewProjMatrix(viewProj);
     prog.setGeometryColor(color);
+    prog.setTime(Date.now() - this.startTime) 
 
     for (let drawable of drawables) {
       prog.draw(drawable);
