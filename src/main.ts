@@ -19,9 +19,12 @@ const controls = {
   B: 0.0,
   A: 1.0,
   'Lambert': changeToLambert,
-  'FBM': changeToFBM,
+  'Perlin': changeToPerlin,
+  'Worley': changeToWorley,
   'Regular': changeToRegular,
-  'Custom1': changeToCustom1,
+  'Expand': changeToExpand,
+  'Collapse': changeToCollapse,
+
 };
 
 let icosphere: Icosphere;
@@ -35,17 +38,25 @@ function changeToLambert()
 {
   fragShader = require('./shaders/lambert-frag.glsl');
 }
-function changeToFBM()
+function changeToPerlin()
 {
-  fragShader = require('./shaders/fbm-frag.glsl');
+  fragShader = require('./shaders/perlin-frag.glsl');
+}
+function changeToWorley()
+{
+  fragShader = require('./shaders/Worley-frag.glsl');
 }
 function changeToRegular()
 {
   vertShader = require('./shaders/lambert-vert.glsl');
 }
-function changeToCustom1()
+function changeToExpand()
 {
-  vertShader = require('./shaders/custom1-vert.glsl');
+  vertShader = require('./shaders/expand-vert.glsl');
+}
+function changeToCollapse()
+{
+  vertShader = require('./shaders/collapse-vert.glsl');
 }
 var prevFragShader = fragShader;
 var prevVertShader = vertShader;
@@ -80,10 +91,13 @@ function main() {
   colorGUI.add(controls, 'A', 0, 1).step(0.01);
   var fragShaderGUI = gui.addFolder('Frag Shaders');
   fragShaderGUI.add(controls, 'Lambert');
-  fragShaderGUI.add(controls, 'FBM');
+  fragShaderGUI.add(controls, 'Perlin');
+  fragShaderGUI.add(controls, 'Worley');
   var vertShaderGUI = gui.addFolder('Vert Shaders');
   vertShaderGUI.add(controls, 'Regular');
-  vertShaderGUI.add(controls, 'Custom1');
+  vertShaderGUI.add(controls, 'Expand');
+  vertShaderGUI.add(controls, 'Collapse');
+
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
