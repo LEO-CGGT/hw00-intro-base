@@ -1,4 +1,5 @@
 # Leo (Haoquan Liang) - Features and Demo
+## [Live Demo](https://leo-cggt.github.io/hw00-intro-base)
 ## GUI
 - GUI allows the user to change the base color of the mesh. It also allows the user to select the frag shader and vert shader being used.   
 <img src="images/ui.png">
